@@ -1,82 +1,61 @@
-// NOT MY SOLUTION
-// step parameter is optional
-// if step is not passed in, 
-// and start is less than or equal to end, 
-// then step = 1, else step = -1
-function range(start, end, step = start <= end ? 1 : -1) {
-    let result = [];
-    // loop iterates up for positive step values
-    // and iterates down for negative step values
-    for (let i = start; step >= 0 ? i <= end : i >= end; i+=step) {
-      result.push(i);
+// Example
+var list = {
+    value: 1,
+    rest: {
+        value: 2,
+        rest: {
+            value: 3,
+            rest: null
+        }
     }
-    return result;
-  }
+}
 
-const sum = (array) => array.length === 0 ? 0 : array[0] + sum(array.slice(1))
+// Return an object
+// For each value in the array, return a new object that has the next value as a link.
+const arrayToList = (array) => array.length === 1 ? { value: array[0], rest: null } : { value: array[0], rest: arrayToList(array.slice(1)) };
 
-console.log(sum(range(1, 10)));
+// Turn an object into an array
+const listToArray = (list) => {
+    let arr = [];
+    for (var node = list; node; node = node.rest) {
+        arr.push(node.value)
+    }
+      return arr;
+};
 
-
-// MY SOLUTION - NON SHORTENED
-/*
-const range = (start, end) => {
-    if (end === start) {
-        return [start];
-    } else {
-        var numbers = range(start, end - 1);
-        numbers.push(end);
-        return numbers;
+// Put an element in front of a list
+const prepend = (elem, list) => {
+    return {
+        value: elem,
+        rest: list
     }
 };
 
-const sum = (array) => {
-    if (array.length === 0) {
-        return 0;
+// Return the element at given position or undefined
+const nth = (list, num) => {
+    let count = 0;
+    for (var node = list; node; node = node.rest) {
+        count++
+        if (count === num) {
+            return node.value;
+        } 
+    }
+};
+
+const nthRecursive = (list, num) => {
+    if (num === 1) {
+        return list.value;
+    } else if (list.rest === null || num < 0) {
+        return undefined
     } else {
-        //console.log(array);
-        var recursion = array[0] + sum(array.slice(1));
-        console.log(recursion);
-        //console.log(array);
-        return recursion;  
-    } 
-}
-*/
-
-// What happens here is that every recursion call gets saved to the stack. They don´t start returning after
-// reaching the base case. So when the array has no length, the first result coming back to us is 10 + 0.
-// Then it continues down the stack, all the way down to when the array was full, giving us 54 + 1
-
-// This is how its summed up:
-// 10 [10]
-// 19 [10, 9]
-// 27 [8, 9, 10]
-// 34 [7, 8, 9, 10]
-// 40
-// 45
-// 49
-// 52
-// 54
-// 55
+        return nthRecursive(list.rest, num = num -1);
+    }
+};
 
 
-// [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
-// [ 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
-// [ 3, 4, 5, 6, 7, 8, 9, 10 ]
-// [ 4, 5, 6, 7, 8, 9, 10 ]
-// [ 5, 6, 7, 8, 9, 10 ]
-// [ 6, 7, 8, 9, 10 ]
-// [ 7, 8, 9, 10 ]
-// [ 8, 9, 10 ]
-// [ 9, 10 ]
-// [ 10 ]
-// [ 10 ]
-// [ 9, 10 ]
-// [ 8, 9, 10 ]
-// [ 7, 8, 9, 10 ]
-// [ 6, 7, 8, 9, 10 ]
-// [ 5, 6, 7, 8, 9, 10 ]
-// [ 4, 5, 6, 7, 8, 9, 10 ]
-// [ 3, 4, 5, 6, 7, 8, 9, 10 ]
-// [ 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
-// [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+let arrayList = arrayToList([1, 2, 3])
+//console.log(arrayToList([1, 2, 3]));
+//console.log(listToArray(arrayList));
+//console.log(prepend(10, prepend(20, null)));
+//console.log(nth(arrayToList([10, 20, 30]), 5));
+console.log(nthRecursive(arrayToList([10, 20, 30]), 1));
